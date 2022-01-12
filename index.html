@@ -12,24 +12,48 @@
 <body onload="main()">
     <canvas id="myCanvas"></canvas>
     <canvas id="helperCanvas" style="display:none;"></canvas>
-
-    <div id="menu">
-        <div id="controls">
-            <img src="puzzle.png" style="width: 20%" ; />
-            <h2>PUZZLE GAME</h2>
-            Difficulty <select id="difficulty" onchange="setDifficulty()">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-                <option value="insane">Insane</option>
-            </select>
-            <br>
-            <br>
-            <button onclick="restart()">Start</button>
+    <div id="menuItems" class="menu">
+        <div id="menu">
+            <div id="controls">
+                <img src='title.png' style='width:90%;' />
+                <br>
+                <br>
+                Difficulty <select id="difficulty" onchange="setDifficulty()">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="insane">Insane</option>
+                </select>
+                <br>
+                <br>
+                <button onclick="restart()">Start</button>
+            </div>
         </div>
     </div>
-    <div id="time"></div>
 
+    <div id="endScreen" class="menu" style="display:none">
+        <img src='title.png' style='width:90%;' />
+        <br>
+        <br>
+
+        <div id="scoreValue"></div>
+
+
+        <br>
+        <button onclick="showMenu()">Menu</button>
+    </div>
+
+    <div id="scoresScreen" class="menu" style="display:none">
+        <img src='title.png' style='width:90%;' />
+        <br>
+        <br>
+
+        <div id="scoresContainer"></div>
+        <br>
+    </div>
+
+
+    <div id="time"></div>
 
     <script src="app.js"></script>
 </body>

@@ -9,7 +9,8 @@ let PIECES = [];
 let SELECTED_PIECE = null;
 let START_TIME = null;
 let END_TIME = null;
-let POP_SOUND = new Audio("pop.mp3"); // no sound yet
+
+let POP_SOUND = new Audio('pop.mp3');
 POP_SOUND.volume = 0.1;
 
 let AUDIO_CONTEXT = new (AudioContext || webkitAudioContext || window.webkitAudioContext)();
@@ -19,10 +20,6 @@ let keys = {
     RE: 293.7,
     MI: 329.6
 }
-
-
-
-
 
 function main() {
     CANVAS = document.getElementById("myCanvas");
@@ -74,24 +71,26 @@ function restart() {
     START_TIME = new Date().getTime();
     END_TIME = null;
     randomizePieces();
-    document.getElementById("menu").style.display = "none";
+    document.getElementById("menuItems").style.display = "none";
 }
 
 function updateTime() {
     let now = new Date().getTime();
     if (START_TIME != null) {
         if (END_TIME != null) {
-            document.getElementById("time").innerHTML = formatTime(END_TIME - START_TIME);
+            document.getElementById("time").innerHTML =
+                formatTime(END_TIME - START_TIME);
         } else {
-            document.getElementById("time").innerHTML = formatTime(now - START_TIME);
-
+            document.getElementById("time").innerHTML =
+                formatTime(now - START_TIME);
         }
     }
 }
+
 function isComplete() {
     for (let i = 0; i < PIECES.length; i++) {
         if (PIECES[i].correct == false) {
-            return false
+            return false;
         }
     }
     return true;
@@ -105,10 +104,8 @@ function formatTime(milliseconds) {
 
     let formattedTime = h.toString().padStart(2, '0');
     formattedTime += ":";
-
     formattedTime += m.toString().padStart(2, '0');
     formattedTime += ":";
-
     formattedTime += s.toString().padStart(2, '0');
 
     return formattedTime;
@@ -123,17 +120,17 @@ function addEventListeners() {
     CANVAS.addEventListener("touchend", onTouchEnd);
 }
 
-function onTouchStart(event) {
+function onTouchStart(evt) {
     let loc = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY
+        x: evt.touches[0].clientX,
+        y: evt.touches[0].clientY
     };
     onMouseDown(loc);
 }
-function onTouchMove(event) {
+function onTouchMove(evt) {
     let loc = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY
+        x: evt.touches[0].clientX,
+        y: evt.touches[0].clientY
     };
     onMouseMove(loc);
 }
@@ -166,11 +163,10 @@ function onMouseDown(evt) {
     }
 }
 
-function onMouseMove(event) {
+function onMouseMove(evt) {
     if (SELECTED_PIECE != null) {
-        SELECTED_PIECE.x = event.x - SELECTED_PIECE.offset.x;
-        SELECTED_PIECE.y = event.y - SELECTED_PIECE.offset.y;
-
+        SELECTED_PIECE.x = evt.x - SELECTED_PIECE.offset.x;
+        SELECTED_PIECE.y = evt.y - SELECTED_PIECE.offset.y;
     }
 }
 
@@ -210,6 +206,8 @@ function getPressedPieceByColor(loc, color) {
 
 
 
+
+
 function handleResize() {
     CANVAS.width = window.innerWidth;
     CANVAS.height = window.innerHeight;
@@ -227,7 +225,6 @@ function handleResize() {
     SIZE.x = window.innerWidth / 2 - SIZE.width / 2;
     SIZE.y = window.innerHeight / 2 - SIZE.height / 2;
 }
-
 
 function updateGame() {
     CONTEXT.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -254,7 +251,6 @@ function getRandomColor() {
     const blue = Math.floor(Math.random() * 255);
     return "rgb(" + red + "," + green + "," + blue + ")";
 }
-
 
 function initializePieces(rows, cols) {
     SIZE.rows = rows;
@@ -499,13 +495,11 @@ class Piece {
     }
 }
 
-
 function distance(p1, p2) {
     return Math.sqrt(
         (p1.x - p2.x) * (p1.x - p2.x) +
-        (p1.y - p2.y) * (p1.y - p2.y)
-    );
-};
+        (p1.y - p2.y) * (p1.y - p2.y));
+}
 
 function playNote(key, duration) {
     let osc = AUDIO_CONTEXT.createOscillator();
@@ -535,6 +529,81 @@ function playMelody() {
         playNote(keys.RE, 150);
     }, 450);
     setTimeout(function () {
-        playNote(keys.MI, 300);
+        playNote(keys.MI, 600);
     }, 600);
 }
+
+function showEndScreen() {
+    const time = Math.floor((END_TIME - START_TIME) / 1000);
+    document.getElementById("scoreValue").innerHTML = "Score: " + time;
+    document.getElementById("endScreen").style.display = "block";
+    // document.getElementById('saveBtn').innerHTML = "Save";
+    // document.getElementById('saveBtn').disabled = false;
+}
+
+function showMenu() {
+    document.getElementById("endScreen").style.display = "none";
+    document.getElementById("menuItems").style.display = "block";
+}
+
+// function showScores() {
+//     document.getElementById("endScreen").style.display = "none";
+//     document.getElementById("scoresScreen").style.display = "block";
+//     document.getElementById("scoresContainer").innerHTML = "Loading...";
+//     getScores();
+// }
+
+// function closeScores() {
+//     document.getElementById("endScreen").style.display = "block";
+//     document.getElementById("scoresScreen").style.display = "none";
+// }
+
+
+
+function formatScores(data) {
+    let html = "<table style='width:100%;text-align:center;'>";
+
+    html += formatScoreTable(data["easy"], "Easy");
+    html += formatScoreTable(data["medium"], "Medium");
+    html += formatScoreTable(data["hard"], "Hard");
+    html += formatScoreTable(data["insane"], "Insane");
+
+    return html;
+}
+
+function formatScoreTable(data, header) {
+    let html = "<tr style='background:rgb(123,146,196);color:white'>";
+    html += "<td></td><td><b>" + header + "</b></td><td><b>Time</b></td></tr>";
+
+    for (let i = 0; i < data.length; i++) {
+        html += "<tr>";
+        html += "<td>" + (i + 1) + ".</td><td title='" + data[i]["Name"] +
+            "'>" + data[i]["Name"] + "</td><td>" + Math.floor(data[i]["Time"] / 1000) + "</td></tr>";
+    }
+    return html;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
